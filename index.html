@@ -7,8 +7,91 @@
 <meta name="description" content="GROOVE Archives — the personnel and project archive for GROOVE, an SDMC Student Media Project at Mahindra University.">
 <link rel="stylesheet" href="assets/css/style.css">
 <title>GROOVE Archives — Learn. Create. Perform.</title>
+<style>
+  body.intro-locked{overflow:hidden}
+  .intro-gate{
+    position:fixed;
+    inset:0;
+    z-index:99999;
+    display:grid;
+    place-items:center;
+    background:
+      radial-gradient(circle at 50% 38%,rgba(121,73,145,.18),transparent 31rem),
+      linear-gradient(180deg,#0d0910 0%,#08060a 100%);
+    transition:opacity .9s cubic-bezier(.22,.61,.36,1),visibility .9s;
+  }
+  .intro-gate::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    opacity:.18;
+    background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.02) 1px,transparent 1px);
+    background-size:48px 48px;
+  }
+  .intro-gate__inner{
+    position:relative;
+    z-index:1;
+    display:grid;
+    place-items:center;
+    gap:1.7rem;
+    text-align:center;
+  }
+  .intro-gate__title{
+    margin:0;
+    color:#f9f4fb;
+    font:800 clamp(4.5rem,19vw,13rem)/.8 Arial,Helvetica,sans-serif;
+    letter-spacing:-.08em;
+    text-transform:uppercase;
+    opacity:0;
+    transform:translateY(14px);
+    animation:introTitleIn 1.35s cubic-bezier(.2,.75,.25,1) .12s forwards;
+    text-shadow:0 0 42px rgba(177,111,201,.12);
+    transition:opacity .65s ease,transform .75s ease,letter-spacing .75s ease,filter .75s ease;
+  }
+  .intro-gate__enter{
+    appearance:none;
+    border:0;
+    border-bottom:1px solid rgba(230,208,238,.55);
+    padding:.45rem .2rem .5rem;
+    background:transparent;
+    color:#d6c4dc;
+    cursor:pointer;
+    font:600 .78rem/1 Arial,Helvetica,sans-serif;
+    letter-spacing:.32em;
+    text-transform:uppercase;
+    opacity:0;
+    animation:introEnterIn .9s ease 1.05s forwards;
+    transition:color .2s ease,border-color .2s ease,opacity .45s ease,transform .45s ease;
+  }
+  .intro-gate__enter:hover{color:#fff;border-color:#c99bd9}
+  .intro-gate__enter:focus-visible{outline:2px solid #c99bd9;outline-offset:8px}
+  .intro-gate.is-leaving .intro-gate__title{
+    opacity:0;
+    transform:translateY(-12px) scale(.985);
+    letter-spacing:.015em;
+    filter:blur(7px);
+  }
+  .intro-gate.is-leaving .intro-gate__enter{
+    opacity:0;
+    transform:translateY(8px);
+  }
+  .intro-gate.is-gone{opacity:0;visibility:hidden;pointer-events:none}
+  @keyframes introTitleIn{to{opacity:1;transform:translateY(0)}}
+  @keyframes introEnterIn{to{opacity:1}}
+  @media (prefers-reduced-motion:reduce){
+    .intro-gate__title,.intro-gate__enter{animation:none;opacity:1;transform:none}
+    .intro-gate,.intro-gate__title,.intro-gate__enter{transition-duration:.01ms!important}
+  }
+</style>
 </head>
-<body data-page="archive">
+<body data-page="archive" class="intro-locked">
+<div class="intro-gate" data-intro-gate role="dialog" aria-modal="true" aria-label="Enter GROOVE Archives">
+  <div class="intro-gate__inner">
+    <h1 class="intro-gate__title">GROOVE</h1>
+    <button class="intro-gate__enter" type="button" data-intro-enter>Enter</button>
+  </div>
+</div>
 <a class="skip-link" href="#main">Skip to content</a>
 <header class="site-header">
   <div class="header-inner shell">
@@ -106,5 +189,24 @@
 </footer>
 <script src="assets/js/members.js"></script>
 <script src="assets/js/app.js"></script>
+<script>
+  (() => {
+    const gate = document.querySelector('[data-intro-gate]');
+    const enter = document.querySelector('[data-intro-enter]');
+    if (!gate || !enter) return;
+
+    const leave = () => {
+      gate.classList.add('is-leaving');
+      enter.disabled = true;
+      window.setTimeout(() => {
+        gate.classList.add('is-gone');
+        document.body.classList.remove('intro-locked');
+      }, 760);
+    };
+
+    enter.addEventListener('click', leave);
+    enter.focus({preventScroll:true});
+  })();
+</script>
 </body>
 </html>
