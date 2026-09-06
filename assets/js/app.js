@@ -1,4 +1,9 @@
 (() => {
+  const fandomTheme = document.createElement("link");
+  fandomTheme.rel = "stylesheet";
+  fandomTheme.href = "assets/css/fandom.css";
+  document.head.appendChild(fandomTheme);
+
   const $ = (selector, scope = document) => scope.querySelector(selector);
   const $$ = (selector, scope = document) => [...scope.querySelectorAll(selector)];
 
